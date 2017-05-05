@@ -158,13 +158,12 @@ void loop () {
 
 void httppost () {
 
-  esp.println("AT+CIPSTART=1,\"TCP\",\"" + server + "\",80");//start a TCP connection.
-
-  boolean tcpConnect = false;
+  esp.println("AT+CIPSTART=\"TCP\",\"" + server + "\",80");//start a TCP connection.
 
   do {
     if( esp.find("OK")) {
       Serial.println("TCP connection ready");
+      tcpConnect = true;
     } else {
       Serial.println("TCP connection not ready..."+server);
     }
@@ -173,7 +172,7 @@ void httppost () {
   
   
 
-  String postRequest =
+  /*String postRequest =
   
   "POST " + uri + " HTTP/1.0\r\n" +
   
@@ -185,7 +184,18 @@ void httppost () {
   
   "Content-Type: application/x-www-form-urlencoded\r\n" +
   
-  "\r\n" + data;
+  "\r\n" + data; */
+
+//  Serial.println("DATA --->"+data.length());
+
+  String postRequest = 
+  "POST " + uri + " HTTP/1.1\r\n" +
+  "Host: "+server+"\r\n" +
+  "Accept: *"+"/"+"*\r\n" +
+  "Content-Length: " + data.length() + "\r\n" +
+  "Content-Type: application/x-www-form-urlencoded\r\n" +
+  "Cache-Control: no-cache\r\n" +
+  "\r\n"+data;
   
   String sendCmd = "AT+CIPSEND=";//determine the number of caracters to be sent.
 
@@ -197,18 +207,19 @@ void httppost () {
   
   if(esp.find(">")) {
     Serial.println("Sending.."); 
+    
     esp.print(postRequest);
   
     if( esp.find("SEND OK")) { 
       Serial.println("Packet sent");
-  
-      while (esp.available()) {
+      delay(1000);
+//      while (esp.available()) {
         
         String tmpResp = esp.readString();
         
         Serial.println(tmpResp);
 
-      }
+//      }
 
       // close the connection
       

@@ -9,13 +9,15 @@ String data;
 
 String server = "192.168.1.7"; // www.example.com
 
-String uri = "climatempo/index.php";// our example is /esppost.php
+String uri = "/climatempo/index.php";// our example is /esppost.php
 
 // int DHpin = 8;//sensor pin
 
 byte dat [5];
 
 String temp ,hum;
+
+boolean tcpConnect = false;
 
 void setup() {
 
@@ -139,8 +141,8 @@ void loop () {
 
   //start_test ();
   
-  dat[0] = 70;
-  dat[2] = 20;
+  dat[0] = 60;
+  dat[2] = 10;
   
   // convert the bit data to string form
   
@@ -186,7 +188,7 @@ void httppost () {
   
   "\r\n" + data; */
 
-//  Serial.println("DATA --->"+data.length());
+//  Serial.println("LOL "+data.length());
 
   String postRequest = 
   "POST " + uri + " HTTP/1.1\r\n" +
